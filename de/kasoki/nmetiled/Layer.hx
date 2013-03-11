@@ -40,13 +40,18 @@ class Layer {
 	/** The parent TiledMap */
 	public var parent(default, null):TiledMap;
 	
-	private function new(parent:TiledMap, name:String, width:Int, height:Int, tiles:Array<Int>) {
+	/** The layer properties */
+	public var properties:Hash<String>;
+	
+	private function new(parent:TiledMap, name:String, width:Int, height:Int, tiles:Array<Int>, properties:Hash<String>) {
 		this.parent = parent;
 		this.name = name;
 		this.width = width;
 		this.height = height;
 		
 		this.tiles = new Array<Tile>();
+		
+		this.properties = properties;
 
 		for(gid in tiles) {
 			this.tiles.push(Tile.fromGID(gid, this));
@@ -64,9 +69,14 @@ class Layer {
 		var width:Int = Std.parseInt(xml.get("width"));
 		var height:Int = Std.parseInt(xml.get("height"));
 		var tileGIDs:Array<Int> = new Array<Int>();
+		var props:Hash<String> = new Hash<String>();
 		
 		for (child in xml) {
-			if(Helper.isValidElement(child)) {
+			if (Helper.isValidElement(child)) {
+				if (child.nodeName == "properties")	{
+					props = Helper.getProperties(child);
+				}
+				
 				if (child.nodeName == "data") {
 					for (tile in child) {
 						if (Helper.isValidElement(tile)) {
@@ -79,7 +89,7 @@ class Layer {
 			}
 		}
 		
-		return new Layer(parent, name, width, height, tileGIDs);
+		return new Layer(parent, name, width, height, tileGIDs, props);
 	}
 
 	/**

@@ -44,6 +44,12 @@ class Tileset {
 
 	/** The height of one tile */
 	public var tileHeight:Int;
+	
+	/** Spacing between tiles */
+	public var spacing:Int;
+	
+	/** Margins of tileset */
+	public var margin:Int;
 
 	/** All properties this Tileset contains */
 	public var properties:Hash<String>;
@@ -54,12 +60,14 @@ class Tileset {
 	/** The image of this tileset */
 	public var image:TilesetImage;
 	
-	private function new(name:String, tileWidth:Int, tileHeight:Int, properties:Hash<String>, image:TilesetImage) {
+	private function new(name:String, tileWidth:Int, tileHeight:Int, properties:Hash<String>, image:TilesetImage, ?spacing:Int = 0, ?margin:Int = 0) {
 		this.name = name;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		this.properties = properties;
 		this.image = image;
+		this.spacing = spacing;
+		this.margin = margin;
 	}
 	
 	/** Sets the first GID. */
@@ -74,6 +82,10 @@ class Tileset {
 		var name:String = xml.get("name");
 		var tileWidth:Int = Std.parseInt(xml.get("tilewidth"));
 		var tileHeight:Int = Std.parseInt(xml.get("tileheight"));
+		
+		var tileSpacing:Int = Helper.getIntIfExists(xml, "spacing", 0);
+		var tileMargin:Int = Helper.getIntIfExists(xml, "margin", 0);
+		
 		var properties:Hash<String> = new Hash<String>();
 		var propertyTiles:IntHash<PropertyTile> = new IntHash<PropertyTile>();
 		var image:TilesetImage = null;
@@ -81,11 +93,7 @@ class Tileset {
 		for (child in xml.elements()) {
 			if(Helper.isValidElement(child)) {
 				if (child.nodeName == "properties") {
-					for (property in child) {
-						if (Helper.isValidElement(property)) {
-							properties.set(property.get("name"), property.get("value"));
-						}
-					}
+					properties = Helper.getProperties(child);
 				}
 				
 				if (child.nodeName == "image") {
@@ -102,13 +110,7 @@ class Tileset {
 					for (element in child) {
 						if(Helper.isValidElement(element)) {
 							if (element.nodeName == "properties") {
-								for (property in element) {
-									if (!Helper.isValidElement(property)) {
-										continue;
-									}
-									
-									properties.set(property.get("name"), property.get("value"));
-								}
+								properties = Helper.getProperties(element);
 							}
 						}
 					}
@@ -118,7 +120,7 @@ class Tileset {
 			}
 		}
 		
-		return new Tileset(name, tileWidth, tileHeight, properties, image);
+		return new Tileset(name, tileWidth, tileHeight, properties, image, tileSpacing, tileMargin);
 	}
 	
 	/** Returns the BitmapData of the given GID */

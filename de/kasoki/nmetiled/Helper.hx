@@ -46,4 +46,32 @@ class Helper {
 		return Assets.getBitmapData(assetPath);
 	}
 	
+	/** This method generates a property hash of a property xml element  */
+	public static function getProperties(element:Xml):Hash<String> 	{
+		var ret:Hash<String> = new Hash<String>();
+		
+		if (!Helper.isValidElement(element) || element.nodeName != "properties") {
+			return ret;
+		}
+		
+		for (property in element) {
+			if (Helper.isValidElement(property)) {				
+				ret.set(property.get("name"), property.get("value"));
+			}
+		}
+		
+		return ret;
+	}
+	
+	/** This method gets the int value attribute of the XML element if it exists. If it doesn,t
+	    it returns a default value */
+	public static function getIntIfExists(element:Xml, name:String, defaultValue:Int):Int {
+		var e = element.get(name);
+		if (e != null) {
+			return Std.parseInt(e);
+		}
+		else {
+			return defaultValue;
+		}
+	}
 }

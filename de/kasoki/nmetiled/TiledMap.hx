@@ -57,6 +57,9 @@ class TiledMap {
 
 	/** Contains all layers from this map */
 	public var layers:Array<Layer>;
+	
+	/** Contains map properties */
+	public var properties:Hash<String>;
 
 	/** All objectgroups */
 	public var objectGroups:Array<TiledObjectGroup>;
@@ -95,9 +98,14 @@ class TiledMap {
 		this.tilesets = new Array<Tileset>();
 		this.layers = new Array<Layer>();
 		this.objectGroups = new Array<TiledObjectGroup>();
+		this.properties = new Hash<String>();
 		
 		for (child in xml) {
-			if(Helper.isValidElement(child)) {
+			if (Helper.isValidElement(child)) {
+				if (child.nodeName == "properties") {			
+					properties = Helper.getProperties(child);
+				}
+				
 				if (child.nodeName == "tileset") {
 					var tileset:Tileset = null;
 					
