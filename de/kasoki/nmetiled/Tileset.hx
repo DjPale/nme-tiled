@@ -60,11 +60,12 @@ class Tileset {
 	/** The image of this tileset */
 	public var image:TilesetImage;
 	
-	private function new(name:String, tileWidth:Int, tileHeight:Int, properties:Hash<String>, image:TilesetImage, ?spacing:Int = 0, ?margin:Int = 0) {
+	private function new(name:String, tileWidth:Int, tileHeight:Int, properties:Hash<String>, image:TilesetImage, propertyTiles:IntHash<PropertyTile>, ?spacing:Int = 0, ?margin:Int = 0) {
 		this.name = name;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		this.properties = properties;
+		this.propertyTiles = propertyTiles;
 		this.image = image;
 		this.spacing = spacing;
 		this.margin = margin;
@@ -105,22 +106,22 @@ class Tileset {
 				
 				if (child.nodeName == "tile") {
 					var id:Int = Std.parseInt(child.get("id"));
-					var properties:Hash<String> = new Hash<String>();
+					var tileProperties:Hash<String> = new Hash<String>();
 					
-					for (element in child) {
+					for (element in child.elements()) {
 						if(Helper.isValidElement(element)) {
 							if (element.nodeName == "properties") {
-								properties = Helper.getProperties(element);
+								tileProperties = Helper.getProperties(element);
 							}
 						}
 					}
 					
-					propertyTiles.set(id, new PropertyTile(id, properties));
+					propertyTiles.set(id, new PropertyTile(id, tileProperties));
 				}
 			}
 		}
 		
-		return new Tileset(name, tileWidth, tileHeight, properties, image, tileSpacing, tileMargin);
+		return new Tileset(name, tileWidth, tileHeight, properties, image, propertyTiles, tileSpacing, tileMargin);
 	}
 	
 	/** Returns the BitmapData of the given GID */

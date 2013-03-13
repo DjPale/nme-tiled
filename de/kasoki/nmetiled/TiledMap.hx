@@ -254,19 +254,6 @@ class TiledMap {
 
 		return tileset;
 	}
-
-	public function getTilePropertiesByGID(gid:Int):Hash<String> {
-		var tiles = getTilesetByGID(gid);
-		if (tiles == null || tiles.propertyTiles == null) {
-			return null;
-		}
-		
-		if (tiles.propertyTiles.exists(gid)) {
-			return tiles.propertyTiles.get(gid).properties;
-		}
-		
-		return null;
-	}
 	
 	/**
 	 * Returns the total Width of the map
