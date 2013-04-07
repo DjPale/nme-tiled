@@ -58,6 +58,8 @@ class TiledMap {
 	/** Contains all layers from this map */
 	public var layers:Array<Layer>;
 	
+	public var imageLayers:Array<ImageLayer>;
+	
 	/** Contains map properties */
 	public var properties:Hash<String>;
 
@@ -97,6 +99,7 @@ class TiledMap {
 		this.tileHeight = Std.parseInt(xml.get("tileheight"));
 		this.tilesets = new Array<Tileset>();
 		this.layers = new Array<Layer>();
+		this.imageLayers = new Array<ImageLayer>();
 		this.objectGroups = new Array<TiledObjectGroup>();
 		this.properties = new Hash<String>();
 		
@@ -130,6 +133,12 @@ class TiledMap {
 					var objectGroup = TiledObjectGroup.fromGenericXml(child);
 					
 					this.objectGroups.push(objectGroup);
+				}
+				
+				if (child.nodeName == "imagelayer") {
+					var imageLayer = ImageLayer.fromGenericXml(child);
+					
+					this.imageLayers.push(imageLayer);
 				}
 			}
 		}
